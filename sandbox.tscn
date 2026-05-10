@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://b7bjgmkplcmh3"]
+
+[ext_resource type="PackedScene" uid="uid://liijjn8go2nh" path="res://characters/player/knight/player.tscn" id="1_3h184"]
+[ext_resource type="Texture2D" uid="uid://lxmijo2tusml" path="res://icon.svg" id="2_cojph"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7lbm"]
+size = Vector2(122, 124)
+
+[node name="Sandbox" type="Node2D" unique_id=446764212]
+position = Vector2(1, -1)
+
+[node name="Player" parent="." unique_id=206682024 instance=ExtResource("1_3h184")]
+position = Vector2(-1, -172)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1338056134]
+position = Vector2(6, 247)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1253351966]
+shape = SubResource("RectangleShape2D_p7lbm")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=1580948679]
+modulate = Color(0.99758595, 0, 0.12813574, 1)
+texture = ExtResource("2_cojph")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1432215770]
