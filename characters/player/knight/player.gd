@@ -83,17 +83,21 @@ func update_animations(direction):
 		sprite.flip_h = true
 
 	# -- LÓGICA DE PRIORIDAD --
-	
+
 	# Prioridad 1: Si estamos moviéndonos, corremos. Esto cancela el aterrizaje y da fluidez.
 	if is_on_floor() and direction != 0:
 		anim.play("run") # Si corremos reproduce run
 		return # Cortamos la ejecución aquí, no miramos más
 		
-	# Prioridad 2: Si estamos quietos, comprobamos si la animación de aterrizaje está sonando para no interrumpirla con "idle"
+	# Prioridad 2: Esto lo pongo aqui para que tenga prioridad el jump antes que el "land" instantáneamente.
+	if velocity.y < 0:
+		anim.play("jump") # Aqui si saltamos reproduce jump
+		return
+	# Prioridad 3: Si estamos quietos, comprobamos si la animación de aterrizaje está sonando para no interrumpirla con "idle"
 	if anim.current_animation == "land" and anim.is_playing():
 		return # No hacemos nada más, dejamos que el choque termine
 		
-	# Prioridad 3: Lógica normal de aire/suelo/pared
+	# Prioridad 4: Lógica normal de aire/suelo/pared
 	if is_on_floor():
 		if direction == 0:
 			anim.play("idle") # Si estamos quietos en el suelo reproduce idle
@@ -102,7 +106,6 @@ func update_animations(direction):
 			anim.play("wall_slide") # Si estamos en la pared deslizandonos reproduce wall_slide
 			# Forzamos al caballero a mirar hacia la pared
 			sprite.flip_h = get_wall_normal().x > 0
-		elif velocity.y < 0:
-			anim.play("jump") # Aqui si saltamos reproduce jump
 		else:
 			anim.play("fall") # Si caemos repoducira fall
+	
