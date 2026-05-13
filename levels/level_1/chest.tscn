@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://bwkb5i8us74hk"]
+
+[ext_resource type="Texture2D" uid="uid://cvq2y4d6fg6le" path="res://assets/textures/environments/Dungeon Tile Set.png" id="1_nqas2"]
+[ext_resource type="Script" uid="uid://wxxiqdpptlhh" path="res://levels/level_1/chest.gd" id="2_yrdma"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yrdma"]
+size = Vector2(16, 16)
+
+[sub_resource type="Animation" id="Animation_yrdma"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(191.96777, 146.9704, 16.029648, 13.051819)]
+}
+
+[sub_resource type="Animation" id="Animation_30v6w"]
+resource_name = "open"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Rect2(191.96777, 146.9704, 16.029648, 13.051819), Rect2(207.98079, 143.9993, 16.028442, 16.020447)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("1_nqas2")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sl278"]
+_data = {
+&"RESET": SubResource("Animation_yrdma"),
+&"open": SubResource("Animation_30v6w")
+}
+
+[node name="Chest" type="Node2D" unique_id=1885906646]
+z_index = -1
+script = ExtResource("2_yrdma")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=594952478]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=118907186]
+shape = SubResource("RectangleShape2D_yrdma")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=993144238]
+texture = ExtResource("1_nqas2")
+region_enabled = true
+region_rect = Rect2(191.96777, 146.9704, 16.029648, 13.051819)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1044083970]
+root_node = NodePath("../Sprite2D")
+libraries/ = SubResource("AnimationLibrary_sl278")
+
+[node name="Label" type="Label" parent="." unique_id=921697649]
+visible = false
+z_index = 2
+offset_left = -15.0
+offset_top = -25.0
+offset_right = 51.0
+offset_bottom = -2.0
+scale = Vector2(0.5, 0.5)
+text = "Pulsa [E]"

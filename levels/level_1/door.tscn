@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://60xgbs5on2xl"]
+
+[ext_resource type="Script" uid="uid://bxwmn8alp010o" path="res://levels/level_1/door.gd" id="1_bq2q6"]
+[ext_resource type="Texture2D" uid="uid://cvq2y4d6fg6le" path="res://assets/textures/environments/Dungeon Tile Set.png" id="2_8gsn5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8gsn5"]
+size = Vector2(18, 31)
+
+[node name="door" type="Node2D" unique_id=1171925043]
+script = ExtResource("1_bq2q6")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=537472208]
+texture = ExtResource("2_8gsn5")
+region_enabled = true
+region_rect = Rect2(208, 160, 16, 32)
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1546084577]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1802741329]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_8gsn5")
+
+[node name="Label" type="Label" parent="." unique_id=2119451340]
+visible = false
+z_index = 2
+offset_left = -14.0
+offset_top = -22.0
+offset_right = 99.0
+offset_bottom = 1.0
+scale = Vector2(0.25, 0.25)
+text = "[E] para entrar"

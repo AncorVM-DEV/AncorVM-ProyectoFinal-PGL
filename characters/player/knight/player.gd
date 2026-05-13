@@ -5,6 +5,10 @@ const SPEED = 150.0          # Velocidad al caminar
 const JUMP_VELOCITY = -400.0 # Fuerza del salto (negativo es hacia arriba en 2D)
 const WALL_SLIDE_SPEED = 200.0 # Velocidad máxima al resbalar
 const WALL_JUMP_PUSH = 300.0 # Fuerza para separarse de la pared al saltar
+	# --- Habilidad ROLL ---
+const ROLL_SPEED = 350.0      # Velocidad horizontal durante el roll (más rápida que correr)
+const ROLL_DURATION = 0.4     # Cuánto dura el roll en segundos
+const ROLL_COOLDOWN = 1.0     # Tiempo de espera antes de poder volver a rodar
 
 # Obtenemos la gravedad por defecto del proyecto de Godot
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -17,10 +21,54 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var was_in_air = false # Esto recuerda si en el frame anterior estábamos volando
 var wall_jump_timer = 0.0 # Temporizador seguro para bloquear el control al rebotar en la pared
 
+	# --- Estado del Roll ---
+var is_rolling = false           # Si estamos rodando ahora mismo
+var roll_timer = 0.0             # Cuánto tiempo le queda al roll actual
+var roll_cooldown_timer = 0.0    # Tiempo restante hasta poder volver a rodar
+var roll_direction = 1           # Dirección del roll (1 derecha, -1 izquierda)
+
+	# Estado daño/muerte
+var is_invulnerable = false  # Si es true los pinchos no nos hacen daño (activo durante el roll y el respawn)
+var is_dead = false          # Si estamos muertos, paramos toda la lógica de movimiento
+
+
+func _ready():
+	# Nos añadimos al grupo "player" para que otros scripts (pinchos, cofre, puerta) nos detecten
+	add_to_group("player")
+	# Escuchamos la señal de muerte del GameManager para reaccionar cuando nos quedemos sin vidas
+	GameManager.player_died.connect(_on_player_died)
+	# Guardamos la posición inicial como punto de respawn por defecto
+	GameManager.respawn_position = global_position
+
+
 func _physics_process(delta):
-	# 0. ACTUALIZAR EL TEMPORIZADOR
+	# Si estamos muertos no procesamos nada (se ejecuta la animación de muerte aparte)
+	if is_dead:
+		return
+	
+	# 0. ACTUALIZAR LOS TEMPORIZADORES
 	if wall_jump_timer > 0:
 		wall_jump_timer -= delta
+	if roll_cooldown_timer > 0:
+		roll_cooldown_timer -= delta
+
+	# 0.5 SI ESTAMOS RODANDO: el roll tiene control total del movimiento, ignoramos el input normal
+	if is_rolling:
+		roll_timer -= delta
+		velocity.x = roll_direction * ROLL_SPEED
+		# Aplicamos gravedad por si rodamos por un borde
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		# Cuando se acaba el roll volvemos a la lógica normal
+		if roll_timer <= 0:
+			end_roll()
+		move_and_slide()
+		return # No ejecutamos el resto del physics_process mientras rodamos
+
+	# 0.6 INICIAR ROLL: Acción personalizada "roll" (Shift) - Solo si tenemos la habilidad desbloqueada
+	if Input.is_action_just_pressed("roll") and can_roll():
+		start_roll()
+		return
 
 	# 1. GRAVEDAD Y RESBALAR EN PARED: Si no estamos en el suelo, nos caemos o resbalamos por la pared.
 	if not is_on_floor():
@@ -74,6 +122,70 @@ func _physics_process(delta):
 	move_and_slide()
 
 
+# --- FUNCIONES DE ROLL ---
+
+# Comprueba si se cumplen TODAS las condiciones para poder rodar
+func can_roll() -> bool:
+	return GameManager.has_roll \
+		and roll_cooldown_timer <= 0 \
+		and not is_rolling \
+		and is_on_floor()  # Solo se puede rodar en el suelo, no en el aire
+
+# Arranca el roll: activa la invulnerabilidad y reproduce la animación
+func start_roll():
+	is_rolling = true
+	is_invulnerable = true
+	roll_timer = ROLL_DURATION
+	# Rodamos hacia donde estemos mirando (sprite.flip_h indica si miramos a la izquierda)
+	roll_direction = -1 if sprite.flip_h else 1
+	anim.play("roll")
+
+# Termina el roll: quita la invulnerabilidad y arranca el cooldown
+func end_roll():
+	is_rolling = false
+	is_invulnerable = false
+	roll_cooldown_timer = ROLL_COOLDOWN
+
+
+# --- FUNCIONES DE DAÑO Y MUERTE ---
+
+# Esta función la llama el script de los pinchos cuando nos tocan
+func hit_by_spike():
+	# Si estamos rodando o ya muertos, ignoramos el daño
+	if is_invulnerable or is_dead:
+		return
+	GameManager.take_damage()
+	# Si aún quedan vidas, respawneamos en el punto inicial del nivel
+	if GameManager.lives > 0:
+		respawn()
+	# Si ya no quedan vidas, el GameManager emite player_died y se llama _on_player_died()
+
+# Nos teletransporta al punto de respawn con una breve invulnerabilidad y parpadeo
+func respawn():
+	is_invulnerable = true
+	velocity = Vector2.ZERO
+	global_position = GameManager.respawn_position
+	# Parpadeo visual para indicar que somos invulnerables temporalmente
+	var blink_tween = create_tween().set_loops(6)
+	blink_tween.tween_property(sprite, "modulate:a", 0.3, 0.1)
+	blink_tween.tween_property(sprite, "modulate:a", 1.0, 0.1)
+	await get_tree().create_timer(1.2).timeout
+	is_invulnerable = false
+
+# Se llama cuando el GameManager emite la señal player_died (vidas = 0)
+func _on_player_died():
+	is_dead = true
+	velocity = Vector2.ZERO
+	# Si tenemos animación "death" la reproducimos, si no esperamos un poco
+	if anim.has_animation("death"):
+		anim.play("death")
+		await anim.animation_finished
+	else:
+		await get_tree().create_timer(0.8).timeout
+	# Cambiamos a la pantalla de muerte
+	get_tree().change_scene_to_file("res://ui/game_over/DeathScreen.tscn")
+
+
 # --- FUNCIÓN PARA CONTROLAR LAS ANIMACIONES ---
 func update_animations(direction):
 	# Voltea el Sprite dependiendo de hacia dónde miramos (si no estamos en la pared)
@@ -112,4 +224,3 @@ func update_animations(direction):
 		else:
 			if anim.assigned_animation != "fall":
 				anim.play("fall") # Si caemos repoducira fall
-	
