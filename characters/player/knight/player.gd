@@ -91,7 +91,9 @@ func update_animations(direction):
 		
 	# Prioridad 2: Esto lo pongo aqui para que tenga prioridad el jump antes que el "land" instantáneamente.
 	if velocity.y < 0:
-		anim.play("jump") # Aqui si saltamos reproduce jump
+		# anim.assigned_animation esto hace que la animacion se congele en el ultimo farme y no cree un bucle constante (a pesar de estar desactivado)
+		if anim.assigned_animation != "jump":
+			anim.play("jump") # Aqui si saltamos reproduce jump
 		return
 	# Prioridad 3: Si estamos quietos, comprobamos si la animación de aterrizaje está sonando para no interrumpirla con "idle"
 	if anim.current_animation == "land" and anim.is_playing():
@@ -103,9 +105,11 @@ func update_animations(direction):
 			anim.play("idle") # Si estamos quietos en el suelo reproduce idle
 	else:
 		if is_on_wall_only() and velocity.y > 0:
-			anim.play("wall_slide") # Si estamos en la pared deslizandonos reproduce wall_slide
+			if anim.assigned_animation != "wall_slide":
+				anim.play("wall_slide") # Si estamos en la pared deslizandonos reproduce wall_slide
 			# Forzamos al caballero a mirar hacia la pared
 			sprite.flip_h = get_wall_normal().x > 0
 		else:
-			anim.play("fall") # Si caemos repoducira fall
+			if anim.assigned_animation != "fall":
+				anim.play("fall") # Si caemos repoducira fall
 	

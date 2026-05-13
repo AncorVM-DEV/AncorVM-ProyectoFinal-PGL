@@ -33,6 +33,11 @@ jump={
 ]
 }
 
+[layer_names]
+
+2d_render/layer_1="Top"
+2d_render/layer_2="Atras"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
