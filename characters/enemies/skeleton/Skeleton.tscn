@@ -1,0 +1,221 @@
+[gd_scene format=3 uid="uid://1i11sjsptfn0"]
+
+[ext_resource type="Script" uid="uid://brnq6qby2pc75" path="res://characters/enemies/skeleton/skeleton.gd" id="1_i37li"]
+[ext_resource type="Texture2D" uid="uid://beclgvf5jinpp" path="res://characters/enemies/skeleton/animations/Walk.png" id="2_jf6e0"]
+[ext_resource type="Texture2D" uid="uid://bdbhn5qy3oha0" path="res://characters/enemies/skeleton/animations/Death.png" id="3_6gt0x"]
+[ext_resource type="Texture2D" uid="uid://qkl35ll5sxnu" path="res://characters/enemies/skeleton/animations/Idle.png" id="4_5i82y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jf6e0"]
+size = Vector2(41, 53)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6gt0x"]
+size = Vector2(62, 67)
+
+[sub_resource type="Animation" id="Animation_0mbwg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:hframes")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_jf6e0")]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_btfl4"]
+resource_name = "death"
+length = 0.3
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:hframes")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("3_6gt0x")]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_x57p0"]
+resource_name = "idle"
+length = 0.3
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("4_5i82y")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_qp8r4"]
+resource_name = "walk"
+length = 0.3
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:hframes")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:texture")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_jf6e0")]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bh3ve"]
+_data = {
+&"RESET": SubResource("Animation_0mbwg"),
+&"death": SubResource("Animation_btfl4"),
+&"idle": SubResource("Animation_x57p0"),
+&"walk": SubResource("Animation_qp8r4")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5i82y"]
+size = Vector2(43, 55)
+
+[node name="Skeleton" type="CharacterBody2D" unique_id=520968024]
+collision_layer = 4
+script = ExtResource("1_i37li")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2045099685]
+position = Vector2(3.5, 0.5)
+shape = SubResource("RectangleShape2D_jf6e0")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=763189200]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=1929272582]
+position = Vector2(5, 0.5)
+shape = SubResource("RectangleShape2D_6gt0x")
+debug_color = Color(0.534178, 0, 0.12683365, 0.41960785)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=158395233]
+libraries/ = SubResource("AnimationLibrary_bh3ve")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=162109476]
+texture = ExtResource("2_jf6e0")
+hframes = 4
+
+[node name="DamageZone" type="Area2D" parent="." unique_id=1460072214]
+position = Vector2(4, 0)
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageZone" unique_id=1192868601]
+position = Vector2(-0.5, 0.5)
+shape = SubResource("RectangleShape2D_5i82y")
+debug_color = Color(0.047610596, 0, 0.5490937, 0.41960785)

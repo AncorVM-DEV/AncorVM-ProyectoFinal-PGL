@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://ca4kxip8gnmbf"]
+
+[ext_resource type="Texture2D" uid="uid://cvq2y4d6fg6le" path="res://assets/textures/environments/Dungeon Tile Set.png" id="1_uhvf2"]
+[ext_resource type="Script" uid="uid://nhm48ty2257p" path="res://levels/scripts/spikes.gd" id="1_wjfxh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wjfxh"]
+size = Vector2(20, 9)
+
+[node name="Spikes" type="Node2D" unique_id=1019699761]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=720608136]
+texture = ExtResource("1_uhvf2")
+region_enabled = true
+region_rect = Rect2(48, 224, 16, 16)
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1775490308]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_wjfxh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=495287113]
+position = Vector2(0, 3.5)
+shape = SubResource("RectangleShape2D_wjfxh")
