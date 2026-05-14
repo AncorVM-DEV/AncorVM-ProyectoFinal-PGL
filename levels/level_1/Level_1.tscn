@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://60xgbs5on2xl" path="res://levels/level_1/door.tscn" id="3_kqp5v"]
 [ext_resource type="PackedScene" uid="uid://ca4kxip8gnmbf" path="res://levels/scripts/spikes.tscn" id="4_qk2u1"]
 [ext_resource type="PackedScene" uid="uid://dusjf2tgd0s11" path="res://ui/hud/HUD.tscn" id="6_p46cx"]
+[ext_resource type="PackedScene" uid="uid://bhl05ooynpbxl" path="res://ui/pause_menu/PauseMenu.tscn" id="7_w11ng"]
+[ext_resource type="PackedScene" uid="uid://diotf54w8vonx" path="res://ui/game_over/DeathMenu.tscn" id="8_b86if"]
+[ext_resource type="AudioStream" uid="uid://cppp3cbcnnf6l" path="res://assets/audio/music/musicafondo.ogg" id="9_jd5sc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_aj3dt"]
 texture = ExtResource("2_tre5h")
@@ -234,3 +237,12 @@ vertical_alignment = 1
 uppercase = true
 
 [node name="Hud" parent="." unique_id=912880243 instance=ExtResource("6_p46cx")]
+
+[node name="PauseMenu" parent="." unique_id=507050989 instance=ExtResource("7_w11ng")]
+
+[node name="DeathScreen" parent="." unique_id=787695463 instance=ExtResource("8_b86if")]
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=832309905]
+stream = ExtResource("9_jd5sc")
+volume_db = -22.807
+autoplay = true

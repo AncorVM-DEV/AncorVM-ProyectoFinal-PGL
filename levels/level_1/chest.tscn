@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cvq2y4d6fg6le" path="res://assets/textures/environments/Dungeon Tile Set.png" id="1_nqas2"]
 [ext_resource type="Script" uid="uid://wxxiqdpptlhh" path="res://levels/level_1/chest.gd" id="2_yrdma"]
+[ext_resource type="AudioStream" uid="uid://cg2sghwaxxy4o" path="res://assets/audio/sfx/chestSfx.wav" id="3_30v6w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yrdma"]
 size = Vector2(16, 16)
@@ -82,3 +83,7 @@ offset_right = 51.0
 offset_bottom = -2.0
 scale = Vector2(0.5, 0.5)
 text = "Pulsa [E]"
+
+[node name="Sfx" type="AudioStreamPlayer" parent="." unique_id=1349066226]
+stream = ExtResource("3_30v6w")
+volume_db = -11.86

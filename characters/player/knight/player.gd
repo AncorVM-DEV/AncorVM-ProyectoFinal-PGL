@@ -10,12 +10,20 @@ const ROLL_SPEED = 350.0      # Velocidad horizontal durante el roll (más rápi
 const ROLL_DURATION = 0.4     # Cuánto dura el roll en segundos
 const ROLL_COOLDOWN = 1.0     # Tiempo de espera antes de poder volver a rodar
 
+# --- Habilidad ATAQUE ---
+const ATTACK_DURATION = 0.5   # Cuánto dura la animación del ataque en segundos
+
+# Estado del ataque
+var is_attacking = false       # Si estamos atacando ahora mismo
+var attack_timer = 0.0        # Tiempo que le queda a la animación de ataque
+
 # Obtenemos la gravedad por defecto del proyecto de Godot
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 # Referencias a nuestros nodos (con @onready se cargan al empezar el juego)
 @onready var anim = $AnimationPlayer
 @onready var sprite = $Sprite2D
+@onready var hit_box = $HitBox  # El área que golpea a los enemigos durante el ataque
 
 # --- VARIABLES DE MEMORIA ---
 var was_in_air = false # Esto recuerda si en el frame anterior estábamos volando
@@ -39,6 +47,8 @@ func _ready():
 	GameManager.player_died.connect(_on_player_died)
 	# Guardamos la posición inicial como punto de respawn por defecto
 	GameManager.respawn_position = global_position
+	# Empezamos con el hitbox desactivado: solo se activa cuando atacamos
+	hit_box.monitoring = false
 
 
 func _physics_process(delta):
@@ -51,8 +61,18 @@ func _physics_process(delta):
 		wall_jump_timer -= delta
 	if roll_cooldown_timer > 0:
 		roll_cooldown_timer -= delta
+		
+	# ATAQUE: si estamos atacando, actualizamos el timer y desactivamos el hitbox al terminar
+	if is_attacking:
+		attack_timer -= delta
+		if attack_timer <= 0:
+			end_attack()
+	# INICIAR ATAQUE: Acción "attack" en el Input Map (tecla Z o clic izquierdo)
+	# Podemos atacar si no estamos rodando ni ya atacando
+	if Input.is_action_just_pressed("attack") and not is_rolling and not is_attacking:
+		start_attack()
 
-	# 0.5 SI ESTAMOS RODANDO: el roll tiene control total del movimiento, ignoramos el input normal
+	# SI ESTAMOS RODANDO: el roll tiene control total del movimiento, ignoramos el input normal
 	if is_rolling:
 		roll_timer -= delta
 		velocity.x = roll_direction * ROLL_SPEED
@@ -65,10 +85,12 @@ func _physics_process(delta):
 		move_and_slide()
 		return # No ejecutamos el resto del physics_process mientras rodamos
 
-	# 0.6 INICIAR ROLL: Acción personalizada "roll" (Shift) - Solo si tenemos la habilidad desbloqueada
+	# INICIAR ROLL: Acción personalizada "roll" (Shift) - Solo si tenemos la habilidad desbloqueada
 	if Input.is_action_just_pressed("roll") and can_roll():
 		start_roll()
 		return
+	
+	
 
 	# 1. GRAVEDAD Y RESBALAR EN PARED: Si no estamos en el suelo, nos caemos o resbalamos por la pared.
 	if not is_on_floor():
@@ -176,14 +198,26 @@ func respawn():
 func _on_player_died():
 	is_dead = true
 	velocity = Vector2.ZERO
-	# Si tenemos animación "death" la reproducimos, si no esperamos un poco
+	# Reproducimos la animación de muerte si existe
 	if anim.has_animation("death"):
 		anim.play("death")
-		await anim.animation_finished
-	else:
-		await get_tree().create_timer(0.8).timeout
-	# Cambiamos a la pantalla de muerte
-	get_tree().change_scene_to_file("res://ui/game_over/DeathScreen.tscn")
+	
+
+# Arranca el ataque: activa el hitbox y reproduce la animación
+func start_attack():
+	is_attacking = true
+	attack_timer = ATTACK_DURATION
+	anim.play("sword_attack")
+	# Activamos el hitbox para que detecte enemigos
+	hit_box.monitoring = true
+	# Ajustamos la posición del hitbox según la dirección en la que miramos
+	# Si miramos a la izquierda (flip_h = true) movemos el hitbox a la izquierda también
+	hit_box.position.x = abs(hit_box.position.x) * (-1 if sprite.flip_h else 1)
+
+# Termina el ataque: desactiva el hitbox
+func end_attack():
+	is_attacking = false
+	hit_box.monitoring = false
 
 
 # --- FUNCIÓN PARA CONTROLAR LAS ANIMACIONES ---
@@ -195,7 +229,11 @@ func update_animations(direction):
 		sprite.flip_h = true
 
 	# -- LÓGICA DE PRIORIDAD --
-
+	
+	# Prioridad 0: si estamos atacando, la animación de ataque no se interrumpe
+	if is_attacking:
+		return  # No dejamos que ninguna otra animación se superponga al ataque
+	
 	# Prioridad 1: Si estamos moviéndonos, corremos. Esto cancela el aterrizaje y da fluidez.
 	if is_on_floor() and direction != 0:
 		anim.play("run") # Si corremos reproduce run

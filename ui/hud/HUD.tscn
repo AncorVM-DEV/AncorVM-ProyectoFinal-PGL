@@ -17,6 +17,10 @@ layout_mode = 2
 layout_mode = 2
 text = "Vidas: \"♥ ♥ ♥\""
 
+[node name="KeysLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=903040998]
+layout_mode = 2
+text = "\"🗝 0/7\""
+
 [node name="RollContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1527545013]
 layout_mode = 2
 
