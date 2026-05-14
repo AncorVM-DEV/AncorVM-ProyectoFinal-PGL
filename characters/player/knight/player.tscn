@@ -435,6 +435,7 @@ _data = {
 size = Vector2(26, 40)
 
 [node name="Player" type="CharacterBody2D" unique_id=206682024]
+collision_layer = 2
 script = ExtResource("1_gcncl")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=944337589]
@@ -448,7 +449,7 @@ shape = SubResource("CapsuleShape2D_gcncl")
 libraries/ = SubResource("AnimationLibrary_nf40m")
 
 [node name="HitBox" type="Area2D" parent="." unique_id=1804717836]
-collision_layer = 4
+collision_layer = 2
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox" unique_id=1550116836]

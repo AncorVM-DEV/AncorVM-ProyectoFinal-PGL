@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 # --- VARIABLES CONFIGURABLES ---
-const SPEED = 150.0          # Velocidad al caminar
+const SPEED = 170.0          # Velocidad al caminar
 const JUMP_VELOCITY = -400.0 # Fuerza del salto (negativo es hacia arriba en 2D)
 const WALL_SLIDE_SPEED = 200.0 # Velocidad máxima al resbalar
 const WALL_JUMP_PUSH = 300.0 # Fuerza para separarse de la pared al saltar
@@ -16,6 +16,9 @@ const ATTACK_DURATION = 0.5   # Cuánto dura la animación del ataque en segundo
 # Estado del ataque
 var is_attacking = false       # Si estamos atacando ahora mismo
 var attack_timer = 0.0        # Tiempo que le queda a la animación de ataque
+
+# Estado del Knockback (empujón)
+var knockback_timer = 0.0
 
 # Obtenemos la gravedad por defecto del proyecto de Godot
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -49,12 +52,21 @@ func _ready():
 	GameManager.respawn_position = global_position
 	# Empezamos con el hitbox desactivado: solo se activa cuando atacamos
 	hit_box.monitoring = false
+	hit_box.monitorable = false
 
 
 func _physics_process(delta):
 	# Si estamos muertos no procesamos nada (se ejecuta la animación de muerte aparte)
 	if is_dead:
 		return
+	# --- SISTEMA DE KNOCKBACK (EMPUJÓN) ---
+	if knockback_timer > 0:
+		knockback_timer -= delta
+		# Aplicamos gravedad mientras salimos volando
+		if not is_on_floor():
+			velocity.y += gravity * delta
+		move_and_slide()
+		return # Cortamos aquí para que el jugador no pueda caminar o saltar mientras es empujado
 	
 	# 0. ACTUALIZAR LOS TEMPORIZADORES
 	if wall_jump_timer > 0:
@@ -181,7 +193,37 @@ func hit_by_spike():
 	if GameManager.lives > 0:
 		respawn()
 	# Si ya no quedan vidas, el GameManager emite player_died y se llama _on_player_died()
+# Esta función la llaman los enemigos cuando nos tocan
 
+func take_damage_from_enemy(enemy_x_pos: float):
+	if is_invulnerable or is_dead:
+		return
+		
+	GameManager.take_damage()
+	
+	if GameManager.lives > 0:
+		# 1. Aplicamos el empujón
+		knockback_timer = 0.3 # Pierdes el control durante 0.3 segundos
+		
+		# Calcula de qué lado vino el golpe. 
+		# Si el enemigo está a la derecha (> global_position.x), salimos disparados a la izquierda (-1)
+		var push_dir = -1 if enemy_x_pos > global_position.x else 1
+		
+		# Le damos un buen golpe hacia atrás y un poco hacia arriba para que despegue del suelo
+		velocity = Vector2(push_dir * 250.0, -200.0) 
+		
+		# 2. Nos hacemos invulnerables unos instantes (i-frames) para no recibir daño doble
+		is_invulnerable = true
+		
+		# 3. Parpadeo visual (feedback de daño)
+		var blink_tween = create_tween().set_loops(6)
+		blink_tween.tween_property(sprite, "modulate:a", 0.3, 0.1)
+		blink_tween.tween_property(sprite, "modulate:a", 1.0, 0.1)
+		
+		# Esperamos 1 segundo y le quitamos la invulnerabilidad
+		await get_tree().create_timer(1.0).timeout
+		is_invulnerable = false
+	
 # Nos teletransporta al punto de respawn con una breve invulnerabilidad y parpadeo
 func respawn():
 	is_invulnerable = true
@@ -210,14 +252,18 @@ func start_attack():
 	anim.play("sword_attack")
 	# Activamos el hitbox para que detecte enemigos
 	hit_box.monitoring = true
+	hit_box.monitorable = true
 	# Ajustamos la posición del hitbox según la dirección en la que miramos
 	# Si miramos a la izquierda (flip_h = true) movemos el hitbox a la izquierda también
-	hit_box.position.x = abs(hit_box.position.x) * (-1 if sprite.flip_h else 1)
+	# Invertimos la escala del HitBox entero (el padre). 
+	# Al hacer scale -1, el hijo que estaba en X=16 pasa mágicamente a X=-16.
+	hit_box.scale.x = -1 if sprite.flip_h else 1
 
 # Termina el ataque: desactiva el hitbox
 func end_attack():
 	is_attacking = false
 	hit_box.monitoring = false
+	hit_box.monitorable = false
 
 
 # --- FUNCIÓN PARA CONTROLAR LAS ANIMACIONES ---

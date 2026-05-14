@@ -1,12 +1,26 @@
 [gd_scene format=3 uid="uid://di18i6qkve7gm"]
 
 [ext_resource type="Script" uid="uid://cy1cnl0fjjuay" path="res://objects/collectible/key.gd" id="1_pu1r5"]
+[ext_resource type="AudioStream" uid="uid://dqx2ep301n1l1" path="res://assets/audio/sfx/keycollector.wav" id="2_b8mdv"]
+[ext_resource type="Texture2D" uid="uid://cvq2y4d6fg6le" path="res://assets/textures/environments/Dungeon Tile Set.png" id="2_w280v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b8mdv"]
+size = Vector2(18, 13)
 
 [node name="Key" type="Area2D" unique_id=252551646]
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_pu1r5")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2133982805]
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=197525657]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_b8mdv")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=346683765]
+stream = ExtResource("2_b8mdv")
+volume_db = -12.005
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2119318487]
+texture = ExtResource("2_w280v")
+region_enabled = true
+region_rect = Rect2(176, 150, 15, 8)

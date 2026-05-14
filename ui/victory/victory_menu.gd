@@ -11,7 +11,7 @@ func _ready():
 
 func _on_game_won():
 	# Pequeña pausa antes de mostrar el menú de victoria
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(0.5).timeout
 	show()
 	get_tree().paused = true
 
