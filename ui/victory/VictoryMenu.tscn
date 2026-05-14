@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://d2a8gpj0cbbdo"]
+
+[ext_resource type="Script" uid="uid://bhx2qfq6ttqu6" path="res://ui/victory/victory_menu.gd" id="1_rkr27"]
+
+[node name="VictoryMenu" type="CanvasLayer" unique_id=99854414]
+script = ExtResource("1_rkr27")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=449235084]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect" unique_id=398000966]
+layout_mode = 0
+offset_left = 392.0
+offset_top = 239.0
+offset_right = 588.0
+offset_bottom = 297.0
+scale = Vector2(2, 2)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer" unique_id=782847185]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer" unique_id=168050364]
+layout_mode = 2
+text = "HAS GANADO"
+horizontal_alignment = 1
+
+[node name="WinButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer" unique_id=1600913587]
+layout_mode = 2
+text = "Volver al menu principal
+"

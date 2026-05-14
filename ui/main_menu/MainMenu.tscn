@@ -1,28 +1,43 @@
 [gd_scene format=3 uid="uid://c6gcb50e85p1i"]
 
 [ext_resource type="Script" uid="uid://cj53m8f2otm4m" path="res://ui/main_menu/main_menu.gd" id="1_h7g2k"]
+[ext_resource type="AudioStream" uid="uid://cbl5ib2wiis5g" path="res://assets/audio/music/mainmenu.ogg" id="2_blw3s"]
 
 [node name="MainMenu" type="Control" unique_id=375830904]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_h7g2k")
 
-[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1115580101]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1483994793]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1150.0
+offset_bottom = 650.0
+color = Color(0, 0, 0, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=2032676029]
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect" unique_id=1115580101]
+layout_mode = 0
+offset_left = 417.0
+offset_top = 199.0
+offset_right = 525.0
+offset_bottom = 292.0
+scale = Vector2(2.75, 2.75)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer" unique_id=2032676029]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1568098106]
+[node name="TitleLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer" unique_id=1568098106]
 layout_mode = 2
 text = "Umbra Knight"
 
-[node name="StartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=483144228]
+[node name="StartButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer" unique_id=483144228]
 layout_mode = 2
 text = "Empezar"
 
-[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=511432034]
+[node name="QuitButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer" unique_id=511432034]
 layout_mode = 2
 text = "Salir"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=826446001]
+stream = ExtResource("2_blw3s")
+volume_db = -10.948
+autoplay = true

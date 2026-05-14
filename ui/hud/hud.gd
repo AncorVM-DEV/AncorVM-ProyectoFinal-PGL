@@ -7,6 +7,7 @@ extends CanvasLayer
 # Referencias a nuestros nodos (con @onready se cargan al empezar el juego)
 @onready var lives_label = $MarginContainer/VBoxContainer/LivesLabel              # El label que muestra los corazones (♥ ♥ ♥)
 @onready var roll_container = $MarginContainer/VBoxContainer/RollContainer        # El contenedor con la etiqueta "Roll:" y la barra de cooldown
+@onready var keys_label = $MarginContainer/VBoxContainer/KeysLabel
 @onready var roll_bar = $MarginContainer/VBoxContainer/RollContainer/RollBar      # La ProgressBar que indica si el roll está listo o en cooldown
 
 func _ready():
@@ -14,7 +15,9 @@ func _ready():
 	# Así el HUD se actualiza SOLO cuando hace falta, sin tener que comprobarlo cada frame
 	GameManager.lives_changed.connect(update_lives)
 	GameManager.ability_unlocked.connect(_on_ability_unlocked)
-	
+	GameManager.key_collected.connect(update_keys)
+	# Inicializamos el contador de llaves
+	update_keys(GameManager.key_count)
 	# Inicializamos el HUD con el estado actual del GameManager
 	# Esto es importante porque al cambiar de escena las señales ya se han emitido antes y nos las perderíamos
 	update_lives(GameManager.lives)
@@ -34,6 +37,10 @@ func update_lives(lives: int):
 		hearts += "♡ "
 	# strip_edges() quita el espacio de más que queda al final del bucle
 	lives_label.text = hearts.strip_edges()
+
+func update_keys(total: int):
+	# Mostramos cuántas llaves llevamos de cuántas necesitamos
+	keys_label.text = "🗝 " + str(total) + "/" + str(GameManager.MAX_KEYS)
 
 # Se llama cuando el GameManager emite la señal ability_unlocked (al abrir un cofre)
 func _on_ability_unlocked(ability: String):

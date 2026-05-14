@@ -5,8 +5,8 @@ extends Control
 # Tiene un sistema de anclajes y márgenes pensado para adaptarse a distintas resoluciones de pantalla.
 
 # Referencias a nuestros nodos (con @onready se cargan al empezar el juego)
-@onready var start_button = $CenterContainer/VBoxContainer/StartButton    # Botón "Empezar"
-@onready var quit_button = $CenterContainer/VBoxContainer/QuitButton      # Botón "Salir"
+@onready var start_button = $ColorRect/CenterContainer/VBoxContainer/StartButton    # Botón "Empezar"
+@onready var quit_button = $ColorRect/CenterContainer/VBoxContainer/QuitButton      # Botón "Salir"
 
 func _ready():
 	# Conectamos la señal "pressed" de cada botón a su función correspondiente

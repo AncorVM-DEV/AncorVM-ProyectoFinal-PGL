@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bfx0bqmny0tum"]
+
+[ext_resource type="Script" uid="uid://b78hqbuxmstvm" path="res://characters/enemies/bat/bat.gd" id="1_saovf"]
+
+[node name="Bat" type="CharacterBody2D" unique_id=1599341747]
+script = ExtResource("1_saovf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=497570472]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2134941877]
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=2003040265]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=939419038]

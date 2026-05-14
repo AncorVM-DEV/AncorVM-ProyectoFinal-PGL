@@ -1,5 +1,7 @@
 extends Node2D
 
+
+@onready var sfx = $Sfx
 @onready var interaction_label = $Label
 @onready var area = $Area2D
 @onready var anim = $AnimationPlayer
@@ -36,7 +38,7 @@ func open_chest():
 	interaction_label.visible = false
 	# Animacion de cofre abierto
 	anim.play("open")
-	# TODO: Reproducir sonido
+	sfx.play()   # Reproducimos el sonido al abrir el cofre
 	GameManager.unlock_ability("roll")
 	print("¡Cofre abierto! Conseguiste: Roll")
 	# Desactivamos el script para que no se pueda abrir dos veces
